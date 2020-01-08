@@ -6,12 +6,9 @@ Created on Mon Jan  6 09:09:11 2020
 """
 # process the text file
 
-# coding=utf-8
-import mailbox
 import text_utils
 import pandas as pd
 import re
-import csv
 from config import *
 from bs4 import BeautifulSoup
 from abc import ABCMeta, abstractmethod
@@ -27,9 +24,10 @@ import os
 # Flash content  DONE
 # External resources in HTML header (css, js) DONE
 # Javascript usage to hide URL link
-# Using “@” in URLS
+# Using “@” in URLS DONE
+# Number of dot in domain DONE
 # Using hexadecimal characters in URLS
-# Nonmatching URLS
+# Nonmatching URLS 
 # URL lengths
 # Hostname lengths
 # HREFs to IPs DONE
@@ -233,8 +231,8 @@ def processFolder(filepath, phishy=True, limit=0):
         if limit and i >= limit:
             break
 
-    df = pd.DataFrame(data)
-    df.to_csv(filepath + "-export.csv")    
+#    df = pd.DataFrame(data)
+#    df.to_csv(filepath + "-export.csv")    
     
 
 #dd=processTextFile('fradulent_emails.txt',100000)    

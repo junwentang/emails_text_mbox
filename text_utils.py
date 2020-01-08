@@ -37,7 +37,7 @@ def is_multipart(text):
     if mul_find:
         return True
     return False
-#%%
+
 def find_boundary(text):
     find_re = r'\nContent-Type: multipart/.*; boundary="(.*)"'
     find_part = re.findall(find_re, text)
@@ -48,7 +48,7 @@ def find_boundary(text):
         find_part = re.findall(find_re2, text)
         return find_part
     return find_part
-#%%
+
 def get_num_dots(domain):
     return len(re.findall(r'\.',domain))
 
@@ -144,9 +144,6 @@ def geturls_string(string):
             result.append(link)
     return result
 
-#def geturls_payload(message):
-#    comb = comb_all(message)
-#    return geturls_string(comb)
 
 def getIPHrefs(message):
     urls = geturls_string(message)
@@ -156,7 +153,7 @@ def getIPHrefs(message):
         if iphref.search(url) and iphref.search(url).group(1) is not None:
             result.append(iphref.search(url).group(1))
     return result
-#%%
+
 def getjavascriptusage(message):
     """
     :param message: message
@@ -208,14 +205,6 @@ def getexternalresources(message):
             result.append(css["href"])
 
     return result
-#%%
-
-#def returnallmatches(string, regex):
-#    matches = re.finditer(regex, string, re.MULTILINE)
-#    result = []
-#    for match in enumerate(matches):
-#        result.append(match)
-#    return result
 
 def get_alexa_rank(url):
     xml = urllib.urlopen('http://data.alexa.com/data?cli=10&dat=s&url=%s' % url).read()
@@ -230,21 +219,15 @@ def extract_registered_domain(url):
 
 def ishtml(message):
     result = ("text/html" in get_content_type(message))
-#    payload = getpayload_dict(message)
-#    for part in payload:
-#        if result or BeautifulSoup(part["payload"], features="lxml").find():
-#            return True
     return result
     
 
-###%%
+#Testing/troubleshooting
 ##a = read_text('fradulent_emails.txt')
-#a = read_text('monkey_phishing_2018.txt')
-#    
+#a = read_text('monkey_phishing_2018.txt')   
 ##a = read_text('short.txt')
 #hey= split_text(a)
 ##see1 = getpayload(hey[5])
 ##see = getAttachmentCount(hey[5])
-##
 ##comb= geturls_string(hey[5])
 ##IPHrefs = getIPHrefs(hey[5])

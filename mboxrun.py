@@ -29,7 +29,6 @@ from bs4 import BeautifulSoup
 # Python 2
 from abc import ABCMeta, abstractmethod
 
-#%%
 class FeatureFinder:
     __metaclass__ = ABCMeta
 
@@ -223,6 +222,6 @@ def processMboxFile(filepath, phishy=True, limit=500):
     return data
 
 def mboxtests():
-    processFile("data/raw_data/phishing/phishing2.mbox", limit=2279)
-    processFile("resources/emails-enron.mbox", limit=2257, phishy=False)
+    processMboxFile("data/raw_data/phishing/phishing2.mbox", limit=2279)
+    processMboxFile("resources/emails-enron.mbox", limit=2257, phishy=False)
 

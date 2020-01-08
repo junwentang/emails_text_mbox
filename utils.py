@@ -4,8 +4,8 @@ from bs4 import BeautifulSoup
 import urllib, sys
 #import pythonwhois
 import pprint
-import tldextract
-#%%
+import tldextract 
+
 def getpayload(msg):
     return __getpayload_rec__(msg, payloadresult="")
 
@@ -22,7 +22,7 @@ def __getpayload_rec__(msg, payloadresult):
     else:
         return str(msg.get_content_type()) + "\t" + str(payload) + "\n"
     return payloadresult
-#%%
+
 def getpayload_dict(msg):
     return __getpayload_dict_rec__(msg, [])
 
@@ -36,7 +36,7 @@ def __getpayload_dict_rec__(msg, payloadresult):
         payloadresult.append({"mimeType": msg.get_content_type(), "payload": payload})
     return payloadresult
 
-#%%
+
 def getAttachmentCount(msg):
     return __getAttachmentCountrec__(msg, count=0)
 
@@ -53,7 +53,7 @@ def __getAttachmentCountrec__(msg, count):
 def __hasAttachment__(message):
     contentDisp = message.get("Content-Disposition")
     return contentDisp is not None and contentDisp.lower().find("attachment") != -1
-#%%
+
 
 def getContentTypes(msg):
     return __getContentTypes_rec__(msg, [])
@@ -68,7 +68,7 @@ def __getContentTypes_rec__(msg, contenttypes):
         contenttypes.append(msg.get_content_type())
 
     return contenttypes
-#%%
+
 def get_num_dots(domain):
     return len(re.findall(r'\.',domain))
 

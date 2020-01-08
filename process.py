@@ -10,7 +10,6 @@ from textrun import processTextFile, processFolder
 import os
 import pandas as pd
 
-#%%
 class Queue:
 
   def __init__(self):
@@ -28,7 +27,6 @@ class Queue:
       if len(self.queue)>0:
           return self.queue.pop()
       return ("No elements in Queue!")
-#%%
   
 raw_phish_dir = 'data/raw_data/phishing'
 raw_enron_dir = 'data/raw_data/enron'
