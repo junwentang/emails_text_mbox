@@ -44,7 +44,7 @@ def find_boundary(text):
     if find_part:
         return find_part
     else:
-        find_re2 = r'\nContent-Type: multipart/.*;*\s*\n*\W*boundary="*(.*)"*\n'
+        find_re2 = r'\n*Content-Type: multipart/.*;*\s*\n*\W*boundary="*(.*)"*\n'
         find_part = re.findall(find_re2, text)
         return find_part
     return find_part
@@ -66,6 +66,7 @@ def body_split(msg, is_multipart):
     if is_multipart:    
         code = find_boundary(msg)
         print(code)
+        print(msg)
         split_re = f'--{code[0]}'
         split_find = re.split(split_re, msg)
         split_find = split_find[1:]

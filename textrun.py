@@ -15,6 +15,7 @@ import csv
 from config import *
 from bs4 import BeautifulSoup
 from abc import ABCMeta, abstractmethod
+import os
 
 # Internal features
 
@@ -202,19 +203,43 @@ def processTextFile(filepath, phishy=True, limit=500):
         if limit and i >= limit:
             break
 
-        
-
-    df = pd.DataFrame(data)
-    df.to_csv(filepath + "-export.csv")
-
-#    emails = pd.DataFrame(email_index)
-#    emails.to_csv(filepath + "-export-index.csv")
+#    df = pd.DataFrame(data)
+#    df.to_csv(filepath + "-export.csv")
     
     return data
     
+def processFolder(filepath, phishy=True, limit=0):
+    data = []
+    text = []
+    i = 1
+    import os
+    raw_files = os.listdir(filepath)
+    for r in raw_files:
+        text.append(text_utils.read_text(filepath + "/" + r))
+        
+    finders = [HTMLFormFinder(), AttachmentFinder(), FlashFinder(),
+               IFrameFinder(), HTMLContentFinder(), URLsFinder(), DotsInDomain(),
+               ExternalResourcesFinder(), JavascriptFinder(),
+               CssFinder(), IPsInURLs(), AtInURLs(), EncodingFinder()]
+    for message in text:
+        dict = {}
 
+        for finder in finders:
+            dict[finder.getFeatureTitle()] = finder.getFeature(message)
+        dict["Phishy"] = phishy
+        data.append(dict)
+        i += 1
+        print(i)
+        if limit and i >= limit:
+            break
+
+    df = pd.DataFrame(data)
+    df.to_csv(filepath + "-export.csv")    
+    
 
 #dd=processTextFile('fradulent_emails.txt',100000)    
 #dd=processTextFile('short.txt')
-dd=processTextFile('data/raw_data/phishing/monkey_phishing_2015.txt') 
+#dd=processTextFile('data/raw_data/phishing/monkey_phishing_2015.txt') 
+#folder = 'data/raw_data/phishing/Dataset_submit_Phish'
 
+#processFolder(folder)
