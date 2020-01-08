@@ -49,6 +49,9 @@ def find_boundary(text):
         return find_part
     return find_part
 #%%
+def get_num_dots(domain):
+    return len(re.findall(r'\.',domain))
+
 def get_content_type(text):
     cont_type_re = r'Content-Type: (.*);'
     cont_type = re.findall(cont_type_re, text)
@@ -57,7 +60,7 @@ def get_content_type(text):
 def get_content_encoding(text):
     cont_encod_re = r'Content-Transfer-Encoding: (.*)'
     cont_encod = re.findall(cont_encod_re, text)
-    return str(cont_encod)
+    return cont_encod
 
 def body_split(msg, is_multipart):
     if is_multipart:    
@@ -70,6 +73,8 @@ def body_split(msg, is_multipart):
     else:
         body_re = r'.*: .*\n.*: .*\n\n'
         body = re.split(body_re, msg)
+        if len(body) == 1:
+            return ""
         split_find = body[1]
         split_find = f"Content-transfer-encoding: {get_content_encoding(msg)};\nContent-Type: {(get_content_type(msg))[2:-2]};\n {split_find}"
     return split_find
@@ -114,26 +119,36 @@ def geturls_string(string):
     result = []
     
     cleanPayload = re.sub(r'\s+', ' ', string)  # removes innecesary spaces
+    cleanPayload = re.sub(r'\n', '', string)  # removes innecesary return
     linkregex = re.compile(HREFREGEX, re.IGNORECASE) #HREF is hyperlink
     links = linkregex.findall(cleanPayload)
-
     for link in links:
+        print(link)
+        if len(re.findall('http',link))>1:
+            print(link)
+            continue
         if isurl(link):
+            
             result.append(link)
     
     urlregex = re.compile(URLREGEX_NOT_ALONE, re.IGNORECASE)
     links = urlregex.findall(cleanPayload)
     for link in links:
-        if link not in result:
+        if len(re.findall('http',link))>1:
+            sublinks = re.split('[<>]',link)
+            for sublink in sublinks:
+                if sublink not in result and sublink !="":
+                    result.append(sublink)
+        elif link not in result:
             result.append(link)
-    return links
+    return result
 
-def geturls_payload(message):
-    comb = comb_all(message)
-    return geturls_string(comb)
+#def geturls_payload(message):
+#    comb = comb_all(message)
+#    return geturls_string(comb)
 
 def getIPHrefs(message):
-    urls = geturls_payload(message)
+    urls = geturls_string(message)
     iphref = re.compile(IPREGEX, re.IGNORECASE)
     result = []
     for url in urls:
@@ -230,5 +245,5 @@ def ishtml(message):
 ##see1 = getpayload(hey[5])
 ##see = getAttachmentCount(hey[5])
 ##
-##comb= geturls_payload(hey[5])
+##comb= geturls_string(hey[5])
 ##IPHrefs = getIPHrefs(hey[5])

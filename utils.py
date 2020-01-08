@@ -69,6 +69,9 @@ def __getContentTypes_rec__(msg, contenttypes):
 
     return contenttypes
 #%%
+def get_num_dots(domain):
+    return len(re.findall(r'\.',domain))
+
 def geturls_payload(message):
     """
     Returns the urls present in the message payload.

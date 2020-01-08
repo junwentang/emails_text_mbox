@@ -13,11 +13,12 @@ from bs4 import BeautifulSoup
 # HTML form    DONE
 # iFrames      DONE
 # Attachments  DONE
+# Number of Dots DONE
 # Potential XSS calls
 # Flash content  DONE
 # External resources in HTML header (css, js) DONE
 # Javascript usage to hide URL link
-# Using “@” in URLS
+# Using “@” in URLS DONE
 # Using hexadecimal characters in URLS
 # Nonmatching URLS
 # URL lengths
@@ -97,6 +98,18 @@ class URLsFinder(FeatureFinder):
     def getFeature(self, message):
         return len(utils.geturls_payload(message))
 
+class DotsInDomain(FeatureFinder):
+    def getFeatureTitle(self):
+        return "Dots"
+
+    def getFeature(self, message):
+        urls = utils.geturls_payload(message)
+        max_num_dots = 0
+        for url in urls:
+            url_dot = utils.get_num_dots(url)
+            if url_dot > max_num_dots:
+                max_num_dots = url_dot
+        return max_num_dots
 
 class ExternalResourcesFinder(FeatureFinder):
     def getFeatureTitle(self):
@@ -173,7 +186,7 @@ def processMboxFile(filepath, phishy=True, limit=500):
     email_index = []
 
     finders = [HTMLFormFinder(), AttachmentFinder(), FlashFinder(),
-               IFrameFinder(), HTMLContentFinder(), URLsFinder(),
+               IFrameFinder(), HTMLContentFinder(), URLsFinder(),  DotsInDomain(),
                ExternalResourcesFinder(), JavascriptFinder(),
                CssFinder(), IPsInURLs(), AtInURLs(), EncodingFinder()]
     for message in mbox:
@@ -202,7 +215,7 @@ def processMboxFile(filepath, phishy=True, limit=500):
         if limit and i >= limit:
             break
 
-    df = pd.DataFrame(data)
+#    df = pd.DataFrame(data)
 #    df.to_csv(filepath + "-export.csv")
 
 #    emails = pd.DataFrame(email_index)

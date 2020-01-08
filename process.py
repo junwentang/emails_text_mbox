@@ -37,13 +37,36 @@ processed_df = Queue()
 
 raw_phish_files = os.listdir(raw_phish_dir)
 raw_enron_files = os.listdir(raw_enron_dir)
+x= ""
 
-#for f in raw_phish_files:
-#     comb_dir = raw_phish_dir + '/'+ f
-#     data = processFile(comb_dir, True, limit)
-#     processed_df.addtoq(data)
-#     
-#for f in raw_enron_files:
-#     comb_dir = raw_enron_dir + '/'+ f
-#     data = processFile(comb_dir, True, limit)
-#     processed_df.addtoq(data)
+for f in raw_phish_files:
+    if f.endswith('.mbox'):
+        print(f)
+        x =f
+        comb_dir = raw_phish_dir + '/'+ f
+        data = processMboxFile(comb_dir, True, limit)
+        processed_df.addtoq(data)
+     
+for f in raw_enron_files:
+    if f.endswith('.mbox'):
+        print(f)
+        x = f
+        comb_dir = raw_enron_dir + '/'+ f
+        data = processMboxFile(comb_dir, True, limit)
+        processed_df.addtoq(data)
+
+for f in raw_phish_files:
+    if f.endswith('.txt'):
+        print(f)
+        x= f
+        comb_dir = raw_phish_dir + '/'+ f
+        data = processTextFile(comb_dir, True, limit)
+        processed_df.addtoq(data)
+     
+for f in raw_enron_files:
+    if f.endswith('.txt'):
+        print(f)
+        x = f
+        comb_dir = raw_enron_dir + '/'+ f
+        data = processTextFile(comb_dir, True, limit)
+        processed_df.addtoq(data)

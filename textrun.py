@@ -97,8 +97,21 @@ class URLsFinder(FeatureFinder):
         return "URLs"
 
     def getFeature(self, message):
-        return len(text_utils.geturls_payload(message))
-    
+        return len(text_utils.geturls_string(message))
+
+class DotsInDomain(FeatureFinder):
+    def getFeatureTitle(self):
+        return "Dots"
+
+    def getFeature(self, message):
+        urls = text_utils.geturls_string(message)
+        max_num_dots = 0
+        for url in urls:
+            url_dot = text_utils.get_num_dots(url)
+            if url_dot > max_num_dots:
+                max_num_dots = url_dot
+        return max_num_dots
+            
 class ExternalResourcesFinder(FeatureFinder):
     def getFeatureTitle(self):
         return "External Resources"
@@ -133,7 +146,7 @@ class AtInURLs(FeatureFinder):
 
     def getFeature(self, message):
         emailPattern = re.compile(EMAILREGEX, re.IGNORECASE)
-        for url in text_utils.geturls_payload(message):
+        for url in text_utils.geturls_string(message):
             if (url.lower().startswith("mailto:") or (
                     emailPattern.search(url) != None and emailPattern.search(url).group() != None)):
                 continue
@@ -163,7 +176,9 @@ class EncodingFinder(FeatureFinder):
 
     def getFeature(self, message):
         encod = text_utils.get_content_encoding(message)
-        return encod
+        if encod == []:
+            return 'None'
+        return encod[0]
 
 def processTextFile(filepath, phishy=True, limit=500):
     text = text_utils.read_text(filepath)
@@ -171,7 +186,7 @@ def processTextFile(filepath, phishy=True, limit=500):
     data = []
 
     finders = [HTMLFormFinder(), AttachmentFinder(), FlashFinder(),
-               IFrameFinder(), HTMLContentFinder(), URLsFinder(),
+               IFrameFinder(), HTMLContentFinder(), URLsFinder(), DotsInDomain(),
                ExternalResourcesFinder(), JavascriptFinder(),
                CssFinder(), IPsInURLs(), AtInURLs(), EncodingFinder()]
     text = text_utils.split_text(text)
@@ -190,7 +205,7 @@ def processTextFile(filepath, phishy=True, limit=500):
         
 
     df = pd.DataFrame(data)
-#    df.to_csv(filepath + "-export.csv")
+    df.to_csv(filepath + "-export.csv")
 
 #    emails = pd.DataFrame(email_index)
 #    emails.to_csv(filepath + "-export-index.csv")
@@ -199,7 +214,7 @@ def processTextFile(filepath, phishy=True, limit=500):
     
 
 
-#dd=processFile('fradulent_emails.txt',100000)    
-#dd=processFile('short.txt')
-#dd=processFile('monkey_phishing_2015.txt') 
+#dd=processTextFile('fradulent_emails.txt',100000)    
+#dd=processTextFile('short.txt')
+dd=processTextFile('data/raw_data/phishing/monkey_phishing_2015.txt') 
 
